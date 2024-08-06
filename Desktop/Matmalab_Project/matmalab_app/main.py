@@ -61,9 +61,3 @@ async def fetch_questions(db=Depends(get_db)):
         questions.append(question)
     return questions
 
-"""
-@app.post("/matmalab/")
-async def add_result():
-    print("Well done")
-
-"""

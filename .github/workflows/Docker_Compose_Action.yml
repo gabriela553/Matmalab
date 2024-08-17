@@ -12,7 +12,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - name: Install Ruff
+        run: |
+          pip install ruff
 
+      - name: Run Ruff linter
+        run: |
+          ruff check .
+          
       - name: Run docker-compose
         uses: hoverkraft-tech/compose-action@v2.0.1
         with:

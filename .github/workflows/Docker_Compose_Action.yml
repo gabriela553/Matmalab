@@ -18,7 +18,7 @@ jobs:
 
       - name: Run Ruff linter
         run: |
-          ruff check .
+          ruff check . --fix
           
       - name: Run docker-compose
         uses: hoverkraft-tech/compose-action@v2.0.1

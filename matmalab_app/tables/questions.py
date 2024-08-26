@@ -9,10 +9,14 @@ class Base(DeclarativeBase):
 class MathProblemInDB(Base):
     __tablename__ = "questions"
 
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(
+        primary_key=True, autoincrement=True,
+    )
     question: Mapped[str] = mapped_column(String(300))
     answer: Mapped[str]
 
     def __repr__(self) -> str:
-
-        return f"MathProblem(question={self.question!r}, answer={self.answer!r})"
+        return (
+            f"MathProblem(question={self.question!r}, "
+            f"answer={self.answer!r})"
+        )

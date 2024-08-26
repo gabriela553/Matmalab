@@ -4,4 +4,5 @@ build:
 	docker-compose up -d --build
 test:
 	@echo "Running tests..."
-	docker compose run app pytest -s -vv
+	docker compose -f docker-compose.yml run app pytest -s -vv 
+

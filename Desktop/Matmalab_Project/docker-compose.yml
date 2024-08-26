@@ -7,11 +7,14 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: Alpaka78
       POSTGRES_DB: Matmalab
+    ports:
+      - "5432:5432"
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready" ]
+      test: [ "CMD-SHELL", "pg_isready -d Matmalab -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
+
 
   app:
     build:
@@ -22,3 +25,18 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      ollama:
+        condition: service_healthy
+    volumes:
+      - ./matmalab_app:/root/matmalab_app
+
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./ollama/ollama:/root/.ollama
+    healthcheck:
+      test: "bash -c 'cat < /dev/null > /dev/tcp/localhost/11434'"
+

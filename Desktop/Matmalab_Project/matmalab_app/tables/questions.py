@@ -10,7 +10,7 @@ class MathProblemInDB(Base):
     __tablename__ = "questions"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    question: Mapped[str] = mapped_column(String(60))
+    question: Mapped[str] = mapped_column(String(300))
     answer: Mapped[str]
 
     def __repr__(self) -> str:

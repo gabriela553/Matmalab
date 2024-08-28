@@ -15,6 +15,7 @@ OLLAMA_URL = "http://ollama:11434/api/generate"
 OLLAMA_MODEL = "mathstral"
 HTTP_OK = 200
 
+
 class MathProblem(BaseModel):
     id: int | None = None
     question: str
@@ -22,7 +23,11 @@ class MathProblem(BaseModel):
 
     @staticmethod
     def from_math_problem_in_db(math_problem_in_db: MathProblemInDB):
-        return MathProblem(id=math_problem_in_db.id, question=math_problem_in_db.question, answer=math_problem_in_db.answer)
+        return MathProblem(
+            id=math_problem_in_db.id,
+            question=math_problem_in_db.question,
+            answer=math_problem_in_db.answer,
+        )
 
     def to_math_problem_in_db(self):
         return MathProblemInDB(id=self.id, question=self.question, answer=self.answer)
@@ -48,15 +53,16 @@ def model_exists(model_name: str):
 
 def pull_model(model_name: str):
     if not model_exists(model_name):
-        response = requests.post("http://ollama:11434/api/pull",
-                                 json={"model": model_name}, timeout=30,
-                            )
+        response = requests.post(
+            "http://ollama:11434/api/pull",
+            json={"model": model_name},
+            timeout=30,
+        )
         if response.status_code != HTTP_OK:
             raise Exception(f"Failed to pull model: {response.text}")
 
 
 def generate_math_problem():
-
     prompt = """Generate a basic math problem and return it in a JSON format with these keys: 'question' and 'answer'.
     The 'question' should describe the problem, and 'answer' should be the solution. For example:
 {
@@ -75,11 +81,17 @@ def generate_math_problem():
         response = requests.post(OLLAMA_URL, json=payload, timeout=60)
         if response.status_code == HTTP_OK:
             return response.json()["response"]
-        raise HTTPException(status_code=404, detail=f"Request failed with status code {response.status_code}")
+        raise HTTPException(
+            status_code=404,
+            detail=f"Request failed with status code {response.status_code}",
+        )
     except ValueError as ve:
         return {"error": "Failed to parse JSON response", "details": str(ve)}
     except requests.exceptions.Timeout:
-        return {"error": "Request timed out", "details": "The request took too long to complete."}
+        return {
+            "error": "Request timed out",
+            "details": "The request took too long to complete.",
+        }
 
 
 @app.post("/matmalab")
@@ -88,13 +100,14 @@ async def add_question(db: Session = Depends(get_db)):
     while "question" not in math_problem or "answer" not in math_problem:
         math_problem = generate_math_problem()
     math_problem_des = json.loads(math_problem)
-    math_problem = MathProblem(question=math_problem_des["question"],
-                               answer=math_problem_des["answer"])
+    math_problem = MathProblem(
+        question=math_problem_des["question"],
+        answer=math_problem_des["answer"],
+    )
     math_problem = math_problem.to_math_problem_in_db()
     db.add(math_problem)
     db.commit()
     return math_problem
-
 
 
 @app.delete("/matmalab")

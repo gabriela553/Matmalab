@@ -10,6 +10,12 @@ client = TestClient(app)
 HTTP_OK = 200
 
 
+def test_get_math_problems_from_db():
+
+    response = client.get("/matmalab")
+    assert response.status_code == HTTP_OK
+
+
 @patch("requests.post")
 def test_add_math_problem_to_db(post_mock):
 
@@ -44,9 +50,3 @@ def test_add_math_problem_to_db(post_mock):
             timeout=60,
         ),
     ]
-
-
-def test_get_math_problems_from_db():
-
-    response = client.get("/matmalab")
-    assert response.status_code == HTTP_OK

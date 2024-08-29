@@ -110,14 +110,6 @@ async def add_question(db: Session = Depends(get_db)):
     return math_problem
 
 
-@app.delete("/matmalab")
-async def delete_question(db: Session = Depends(get_db)):
-    questions = db.query(MathProblemInDB).all()
-    for question in questions:
-        db.delete(question)
-    db.commit()
-
-
 @app.get("/matmalab")
 async def fetch_questions(db: Session = Depends(get_db)):
     questions = []
@@ -128,3 +120,11 @@ async def fetch_questions(db: Session = Depends(get_db)):
         question = MathProblem.from_math_problem_in_db(result)
         questions.append(question)
     return questions
+
+
+@app.delete("/matmalab")
+async def delete_question(db: Session = Depends(get_db)):
+    questions = db.query(MathProblemInDB).all()
+    for question in questions:
+        db.delete(question)
+    db.commit()
